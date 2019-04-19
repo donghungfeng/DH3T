@@ -293,6 +293,20 @@ void* client_handler(void* p_client) {
 			}
 			send(np->data, "Mod has been add", LENGTH_SEND, 0);
 		}
+		else if(strcmp(recv_buffer, "unmod") == 0){
+			send(np->data, "Enter user's id:", LENGTH_SEND, 0);
+			char recv_buffer[LENGTH_MSG] = {};
+			recv(np->data, recv_buffer, LENGTH_MSG, 0);
+			int id = parseInt(recv_buffer);
+			ClientList *tmp = root->link;
+			while (tmp != NULL) {
+				if (tmp->id == id) {
+					strncpy(tmp->role, "user", 5);
+				}
+				tmp = tmp->link;
+			}
+			send(np->data, "Mod has been detected", LENGTH_SEND, 0);
+		}
 		else if(strcmp(recv_buffer, "ban") == 0){
 			send(np->data, "Enter user's id:", LENGTH_SEND, 0);
 			char recv_buffer[LENGTH_MSG] = {};
@@ -322,21 +336,29 @@ void* client_handler(void* p_client) {
 			send(np->data, "Mod has been add", LENGTH_SEND, 0);
 		}
 		else if(strcmp(recv_buffer, "private") == 0){
-			send(np->data, "Enter user's id:", LENGTH_SEND, 0);
-			char user_id[LENGTH_MSG] = {};
-			recv(np->data, user_id, LENGTH_MSG, 0);
-			send(np->data, "Message:", LENGTH_SEND, 0);
-			char recv_buffer[LENGTH_MSG] = {};
-			recv(np->data, recv_buffer, LENGTH_MSG, 0);
-			int id = parseInt(user_id);
-			ClientList *tmp = root->link;
-			while (tmp != NULL) {
-				if (tmp->id == id) {
-					send(tmp->data, recv_buffer, LENGTH_SEND, 0);
+			if(strcmp(np->role, "admin")==0 || strcmp(np->role, "mod")==0  ){
+				send(np->data, "Enter user's id:", LENGTH_SEND, 0);
+				char user_id[LENGTH_MSG] = {};
+				recv(np->data, user_id, LENGTH_MSG, 0);
+				send(np->data, "Message:", LENGTH_SEND, 0);
+				char recv_buffer[LENGTH_MSG] = {};
+				recv(np->data, recv_buffer, LENGTH_MSG, 0);
+				int id = parseInt(user_id);
+				ClientList *tmp = root->link;
+				while (tmp != NULL) {
+					if (tmp->id == id) {
+						send(tmp->data, recv_buffer, LENGTH_SEND, 0);
+					}
+					tmp = tmp->link;
 				}
-				tmp = tmp->link;
-			}
-			send(np->data, "Message has been sent", LENGTH_SEND, 0);
+				send(np->data, "Message has been sent", LENGTH_SEND, 0);
+				}
+			else{
+				char send_buffer[LENGTH_SEND] = {};
+				sprintf(send_buffer, "Permission denied");
+				send(np->data, send_buffer, LENGTH_SEND, 0);
+			} 
+			
 		}
 		else if(receive < 0) {
             printf("Fatal Error: -1\n");

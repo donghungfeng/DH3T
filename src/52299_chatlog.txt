@@ -1,0 +1,6 @@
+Trang(127.0.0.1) join the chatroom.
+
+TO(127.0.0.1) join the chatroom.
+
+HUng：hello
+
