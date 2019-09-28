@@ -1,3 +1,1 @@
-<?php
-	include('pages/viewdanhsach.php');
-?>
+<a href="pages/viewdanhsach.php"></a>
